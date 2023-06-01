@@ -1,5 +1,6 @@
 package com.nemo.telegrambot;
 
+import com.nemo.telegrambot.components.Buttons;
 import com.nemo.telegrambot.config.BotConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -29,26 +30,68 @@ public class GptBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        if (update.hasMessage() && update.getMessage().hasText()) {
-            String messageText = update.getMessage().getText();
-            long chatId = update.getMessage().getChatId();
-            String memberName = update.getMessage().getFrom().getFirstName();
+        long chatId = 0;
+        long userId = 0; //это нам понадобится позже
+        String userName = null;
+        String receivedMessage;
 
-            switch (messageText) {
-                case "/start" -> startBot(chatId, memberName);
-                default -> log.info("Unexpected message");
+        //если получено сообщение текстом
+        if (update.hasMessage()) {
+            chatId = update.getMessage().getChatId();
+            userId = update.getMessage().getFrom().getId();
+            userName = update.getMessage().getFrom().getFirstName();
+
+            if (update.getMessage().hasText()) {
+                receivedMessage = update.getMessage().getText();
+                botAnswerUtils(receivedMessage, chatId, userName);
             }
+
+            //если нажата одна из кнопок бота
+        } else if (update.hasCallbackQuery()) {
+            chatId = update.getCallbackQuery().getMessage().getChatId();
+            userId = update.getCallbackQuery().getFrom().getId();
+            userName = update.getCallbackQuery().getFrom().getFirstName();
+            receivedMessage = update.getCallbackQuery().getData();
+
+            botAnswerUtils(receivedMessage, chatId, userName);
+        }
+    }
+
+    private void botAnswerUtils(String receivedMessage, long chatId, String userName) {
+        switch (receivedMessage) {
+            case "/start":
+                startBot(chatId, userName);
+                break;
+            case "/help":
+                sendHelpText(chatId);
+                break;
+            default:
+                break;
         }
     }
 
     private void startBot(long chatId, String userName) {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
-        message.setText("Здравствуйте, " + userName + " меня зовут Софи. Я - бот. ");
+        message.setText("Welcome, " + userName + "! I'm Sofie - your assistant bot here");
+        message.setReplyMarkup(Buttons.inlineMarkup());
 
         try {
             execute(message);
-            log.info("Ответ отправлен");
+            log.info("Reply sent");
+        } catch (TelegramApiException e) {
+            log.error(e.getMessage());
+        }
+    }
+
+    private void sendHelpText(long chatId) {
+        SendMessage message = new SendMessage();
+        message.setChatId(chatId);
+        message.setText(com.nemo.telegrambot.components.BotCommands.HELP_TEXT);
+
+        try {
+            execute(message);
+            log.info("Reply sent");
         } catch (TelegramApiException e) {
             log.error(e.getMessage());
         }
