@@ -10,8 +10,8 @@ public interface BotCommands {
             new BotCommand("/help", "bot info")
     );
 
-    String HELP_TEXT = "Этот бот принимает запросы и передает в том же виде ChatGpt" +
-            "Доступны следующие команды:\\n" +
-            "/start - start the bot\n" +
-            "/help - help menu";
+    String HELP_TEXT = "Этот бот принимает запросы и передает в том же виде ChatGpt.\n" +
+            "Доступны следующие команды:\n" +
+            "/start - запуск бота\n" +
+            "/help - меню помощи";
 }
