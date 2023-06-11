@@ -2,7 +2,10 @@ package com.nemo.telegrambot;
 
 import com.nemo.telegrambot.components.Buttons;
 import com.nemo.telegrambot.config.BotConfig;
+import com.nemo.telegrambot.database.User;
+import com.nemo.telegrambot.database.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -13,6 +16,9 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Component
 public class GptBot extends TelegramLongPollingBot {
     final BotConfig config;
+    @Autowired
+    UserRepository userRepository;
+
 
     public GptBot(BotConfig config) {
         this.config = config;
@@ -31,11 +37,10 @@ public class GptBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         long chatId = 0;
-        long userId = 0; //это нам понадобится позже
+        long userId = 0;
         String userName = null;
         String receivedMessage;
 
-        //если получено сообщение текстом
         if (update.hasMessage()) {
             chatId = update.getMessage().getChatId();
             userId = update.getMessage().getFrom().getId();
@@ -45,8 +50,6 @@ public class GptBot extends TelegramLongPollingBot {
                 receivedMessage = update.getMessage().getText();
                 botAnswerUtils(receivedMessage, chatId, userName);
             }
-
-            //если нажата одна из кнопок бота
         } else if (update.hasCallbackQuery()) {
             chatId = update.getCallbackQuery().getMessage().getChatId();
             userId = update.getCallbackQuery().getFrom().getId();
@@ -54,6 +57,10 @@ public class GptBot extends TelegramLongPollingBot {
             receivedMessage = update.getCallbackQuery().getData();
 
             botAnswerUtils(receivedMessage, chatId, userName);
+        }
+
+        if (chatId == Long.parseLong(config.getChatId())) {
+            updateDB(userId, userName);
         }
     }
 
@@ -94,6 +101,21 @@ public class GptBot extends TelegramLongPollingBot {
             log.info("Reply sent");
         } catch (TelegramApiException e) {
             log.error(e.getMessage());
+        }
+    }
+
+    private void updateDB(long userId, String userName) {
+        if (userRepository.findById(userId).isEmpty()) {
+            User user = new User();
+            user.setId(userId);
+            user.setName(userName);
+            //сразу добавляем в столбец каунтера 1 сообщение
+            user.setMsg_number(1);
+
+            userRepository.save(user);
+            log.info("Added to DB: " + user);
+        } else {
+            userRepository.updateMsgNumberByUserId(userId);
         }
     }
 }
