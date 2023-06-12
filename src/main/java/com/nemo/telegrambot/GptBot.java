@@ -15,14 +15,18 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Slf4j
 @Component
 public class GptBot extends TelegramLongPollingBot {
-    final BotConfig config;
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final BotConfig config;
 
-
-    public GptBot(BotConfig config) {
+    public GptBot(UserRepository userRepository, BotConfig config) {
+        this.userRepository = userRepository;
         this.config = config;
     }
+
+//    public GptBot(BotConfig config, UserRepository userRepository) {
+//        this.config = config;
+//        this.userRepository = userRepository;
+//    }
 
     @Override
     public String getBotUsername() {

@@ -12,7 +12,7 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 @Slf4j
 @Component
 public class Initializer {
-    final GptBot bot;
+    private final GptBot bot;
 
     public Initializer(GptBot bot) {
         this.bot = bot;
