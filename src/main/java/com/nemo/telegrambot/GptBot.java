@@ -5,7 +5,6 @@ import com.nemo.telegrambot.config.BotConfig;
 import com.nemo.telegrambot.database.User;
 import com.nemo.telegrambot.database.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -15,18 +14,13 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Slf4j
 @Component
 public class GptBot extends TelegramLongPollingBot {
-    private final UserRepository userRepository;
     private final BotConfig config;
-
-    public GptBot(UserRepository userRepository, BotConfig config) {
-        this.userRepository = userRepository;
+    private final UserRepository userRepository;
+    public GptBot(BotConfig config, UserRepository userRepository) {
         this.config = config;
+        this.userRepository = userRepository;
     }
 
-//    public GptBot(BotConfig config, UserRepository userRepository) {
-//        this.config = config;
-//        this.userRepository = userRepository;
-//    }
 
     @Override
     public String getBotUsername() {
