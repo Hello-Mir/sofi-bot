@@ -51,7 +51,6 @@
             <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>6.2.4.Final</version>
-            <type>pom</type>
         </dependency>
     </dependencies>
 
