@@ -2,7 +2,7 @@ package com.nemo.telegrambot;
 
 import com.nemo.telegrambot.components.Buttons;
 import com.nemo.telegrambot.config.BotConfig;
-import com.nemo.telegrambot.database.User;
+import com.nemo.telegrambot.model.User;
 import com.nemo.telegrambot.database.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

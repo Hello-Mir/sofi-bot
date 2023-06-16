@@ -1,4 +1,4 @@
-package com.nemo.telegrambot.database;
+package com.nemo.telegrambot.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
