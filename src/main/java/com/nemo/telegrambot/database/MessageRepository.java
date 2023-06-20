@@ -10,11 +10,16 @@ import org.springframework.data.repository.query.Param;
 public interface MessageRepository extends CrudRepository<Message, Long> {
     @Transactional
     @Modifying
-    @Query(value = "insert into message (body, userId, createdAt) values(:body,:userId,current_timestamp)", nativeQuery = true)
-    boolean saveMessage(@Param("body") String body, @Param("userId") Long userId);
+    @Query(value = "insert into messages (body, user_id, created_at) values(:body,:userId,current_timestamp)", nativeQuery = true)
+    void saveMessage(@Param("body") String body, @Param("userId") Long userId);
 
     @Transactional
     @Modifying
     @Query(value = "delete from messages where id=:id", nativeQuery = true)
-    boolean deleteMessageById(@Param("id") Long messageId);
+    void deleteMessageById(@Param("id") Long messageId);
+
+    @Transactional
+    @Modifying
+    @Query(value = "delete from messages where user_id =:id", nativeQuery = true)
+    void deleteAllMessagesForUser(@Param("id") Long userId);
 }

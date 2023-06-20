@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.Data;
 import org.glassfish.grizzly.http.util.TimeStamp;
+import org.hibernate.type.descriptor.jdbc.TimestampWithTimeZoneJdbcType;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Data
 @Entity(name = "messages")
@@ -12,5 +14,6 @@ public class Message {
     private Long id;
     private String body;
     private Long userId;
-    private TimeStamp createdAt;
+    @DateTimeFormat
+    private TimestampWithTimeZoneJdbcType createdAt;
 }

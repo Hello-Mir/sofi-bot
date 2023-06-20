@@ -14,4 +14,10 @@ public interface BotCommands {
             "Доступны следующие команды:\n" +
             "/start - запуск бота\n" +
             "/help - меню помощи";
+
+    String DELETE_ALL_MY_MESSAGES_TEXT = "Вызов команды для удаления всех Ваших сообщений\n" +
+            "Доступны следующие команды:\n" +
+            "/start - запуск бота\n" +
+            "/help - меню помощи" +
+            "/delete all messages";
 }
