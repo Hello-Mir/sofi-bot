@@ -10,6 +10,6 @@ import org.springframework.data.repository.query.Param;
 public interface UserRepository extends CrudRepository<User, Long> {
     @Transactional
     @Modifying
-    @Query("update tg_data t set t.msg_number = t.msg_number + 1 where t.id is not null and t.id = :id")
+    @Query(value = "update tg_data t set t.msg_number = t.msg_number + 1 where t.id is not null and t.id = :id")
     void updateMsgNumberByUserId(@Param("id") long id);
 }

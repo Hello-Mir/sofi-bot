@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 public interface MessageRepository extends CrudRepository<Message, Long> {
     @Transactional
     @Modifying
-    @Query(value = "insert into messages (body, user_id, created_at) values(:body,:userId,current_timestamp)", nativeQuery = true)
+    @Query(value = "insert into messages (body, user_id, created_at) values(:body,:userId,CURRENT_TIMESTAMP)", nativeQuery = true)
     void saveMessage(@Param("body") String body, @Param("userId") Long userId);
 
     @Transactional
