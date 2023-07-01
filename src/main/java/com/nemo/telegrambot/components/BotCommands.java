@@ -7,17 +7,17 @@ import java.util.List;
 public interface BotCommands {
     List<BotCommand> LIST_OF_COMMANDS = List.of(
             new BotCommand("/start", "start bot"),
-            new BotCommand("/help", "bot info")
+            new BotCommand("без какой-нибудь команды", "передать сообщение в GPT"),
+            new BotCommand("/delete", "удаление всех сообщений текущего пользователя"),
+            new BotCommand("/help", "меню помощи или справки")
     );
 
-    String HELP_TEXT = "Этот бот принимает запросы и передает в том же виде ChatGpt.\n" +
-            "Доступны следующие команды:\n" +
-            "/start - запуск бота\n" +
-            "/help - меню помощи";
+    String HELP_TEXT = """
+            Этот бот принимает запросы и передает в том же виде ChatGpt.
+            Доступны следующие команды:
+            /start - запуск бота
+            /delete - удалить все Ваши сообщения из БД
+            /help - меню помощи,
+            если не указана ни одна из команд выше""";
 
-    String DELETE_ALL_MY_MESSAGES_TEXT = "Вызов команды для удаления всех Ваших сообщений\n" +
-            "Доступны следующие команды:\n" +
-            "/start - запуск бота\n" +
-            "/help - меню помощи" +
-            "/delete all messages";
 }

@@ -1,5 +1,6 @@
 package com.nemo.telegrambot;
 
+import com.nemo.telegrambot.components.BotCommands;
 import com.nemo.telegrambot.components.Buttons;
 import com.nemo.telegrambot.config.BotConfig;
 import com.nemo.telegrambot.database.MessageRepository;
@@ -15,7 +16,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Slf4j
 @Component
 public class GptBot extends TelegramLongPollingBot {
-    private static final String BOT_REPLY_TXT = "Запрос пользователя обработан";
     private final BotConfig config;
     private final UserRepository userRepository;
     private final MessageRepository messageRepository;
@@ -69,63 +69,43 @@ public class GptBot extends TelegramLongPollingBot {
 
     private void botAnswerUtils(String receivedMessage, long chatId, String userName) {
         switch (receivedMessage) {
-            case "/start":
-                startBot(chatId, userName);
-                break;
-            case "/ask":
-                sendMessageToGPT(chatId, userName, receivedMessage);
-                break;
-            case "/delete_all_my_questions":
-                sendDeleteAllMyMessagesText(chatId);
-                break;
-            case "/help":
-                sendHelpText(chatId);
-                break;
-            default:
-                break;
+            case "/start" -> startBot(chatId, userName);
+            case "/delete_all_my_questions" -> sendDeleteAllMyMessagesText(chatId);
+            case "/help" -> sendHelpText(chatId);
+            default -> sendMessageToGPT(chatId, receivedMessage);
         }
     }
 
     private void startBot(long chatId, String userName) {
+        String startText = "Здравствуйте, " + userName + "\n. Я Софи - Ваш помощник.\nПередам Ваши запросы в GPT.";
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
-        message.setText("Здравствуйте, " + userName + "Я Софи - Ваш помощник");
+        message.setText(startText);
         message.setReplyMarkup(Buttons.inlineMarkup());
-
-        try {
-            execute(message);
-            log.info(BOT_REPLY_TXT);
-        } catch (TelegramApiException e) {
-            log.error(e.getMessage());
-        }
+        replyToUser(message);
     }
 
     private void sendHelpText(long chatId) {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
-        message.setText(com.nemo.telegrambot.components.BotCommands.HELP_TEXT);
-
-        try {
-            execute(message);
-            log.info(BOT_REPLY_TXT);
-        } catch (TelegramApiException e) {
-            log.error(e.getMessage());
-        }
+        message.setText(BotCommands.HELP_TEXT);
+        replyToUser(message);
     }
 
-    private void sendMessageToGPT(long chatId, String username, String text) {
-//        SendMessage message = new SendMessage();
-//        message.setChatId(chatId);
-//        message.setText(BotCommands.DELETE_ALL_MY_MESSAGES_TEXT);
-
-        //            execute(message);
+    private void sendMessageToGPT(long chatId, String text) {
         messageRepository.saveMessage(text, chatId);
-        log.info("USER question saved");
+        SendMessage message = new SendMessage();
+        message.setText("Запрос принят и успешно передан в GPT.");
+        message.setChatId(chatId);
+        replyToUser(message);
     }
 
     private void sendDeleteAllMyMessagesText(long chatId) {
         messageRepository.deleteAllMessagesForUser(chatId);
-        log.info("All USER questions where DELETED");
+        SendMessage message = new SendMessage();
+        message.setText("История Ваших запросов очищена из Базы.");
+        message.setChatId(chatId);
+        replyToUser(message);
     }
 
     private void updateDB(long userId, String userName) {
@@ -140,6 +120,14 @@ public class GptBot extends TelegramLongPollingBot {
             log.info("Added to DB: " + user);
         } else {
             userRepository.updateMsgNumberByUserId(userId);
+        }
+    }
+
+    private void replyToUser(SendMessage message) {
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+            log.error(e.getMessage());
         }
     }
 }
