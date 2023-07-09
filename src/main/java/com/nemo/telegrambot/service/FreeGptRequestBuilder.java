@@ -12,15 +12,14 @@ public class FreeGptRequestBuilder {
     private FreeGptRequest freeGptRequest = new FreeGptRequest();
 
 
-    public FreeGptRequest prepareMainPart(Model model, String jailbreak) {
+    public void prepareMainPart(Model model, String jailbreak) {
         freeGptRequest.setConversationId(randomUUID().toString());
         freeGptRequest.setAction("_ask");
         freeGptRequest.setModel(model.getValue());
         freeGptRequest.setJailbreak(jailbreak == null ? "default" : jailbreak);
-        return freeGptRequest;
     }
 
-    public FreeGptRequest prepareMeta(String message) {
+    public void prepareMeta(String message) {
         Meta meta = new Meta();
         meta.setId(randomUUID().toString());
         Content content = new Content();
@@ -34,10 +33,9 @@ public class FreeGptRequestBuilder {
         content.setParts(Collections.singletonList(new Parts()));
         meta.setContent(content);
         freeGptRequest.setMeta(meta);
-        return freeGptRequest;
     }
 
-    public FreeGptRequest build() {
+    public FreeGptRequest buildFreeGptRequestld() {
         return freeGptRequest;
     }
 }

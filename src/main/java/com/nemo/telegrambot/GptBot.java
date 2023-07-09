@@ -3,9 +3,13 @@ package com.nemo.telegrambot;
 import com.nemo.telegrambot.components.BotCommands;
 import com.nemo.telegrambot.components.Buttons;
 import com.nemo.telegrambot.config.BotConfig;
+import com.nemo.telegrambot.controllers.GptController;
 import com.nemo.telegrambot.database.MessageRepository;
 import com.nemo.telegrambot.database.UserRepository;
 import com.nemo.telegrambot.model.User;
+import com.nemo.telegrambot.model.freegpt.FreeGptRequest;
+import com.nemo.telegrambot.model.freegpt.Model;
+import com.nemo.telegrambot.service.FreeGptRequestBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -19,11 +23,16 @@ public class GptBot extends TelegramLongPollingBot {
     private final BotConfig config;
     private final UserRepository userRepository;
     private final MessageRepository messageRepository;
+    private final GptController gptController;
+    private final FreeGptRequestBuilder requestBuilder;
 
-    public GptBot(BotConfig config, UserRepository userRepository, MessageRepository messageRepository) {
+    public GptBot(BotConfig config, UserRepository userRepository,
+                  MessageRepository messageRepository, GptController gptController, FreeGptRequestBuilder requestBuilder) {
         this.config = config;
         this.userRepository = userRepository;
         this.messageRepository = messageRepository;
+        this.gptController = gptController;
+        this.requestBuilder = requestBuilder;
     }
 
 
@@ -93,9 +102,15 @@ public class GptBot extends TelegramLongPollingBot {
     }
 
     private void sendMessageToGPT(long chatId, String text) {
+        requestBuilder.prepareMainPart(Model.GPT_3_5_TURBO, "default");
+        requestBuilder.prepareMeta(text);
+        FreeGptRequest freeGptRequest = requestBuilder.buildFreeGptRequestld();
+        String body = gptController.sendRequest("text/event-stream", freeGptRequest);
+
         messageRepository.saveMessage(text, chatId);
         SendMessage message = new SendMessage();
-        message.setText("Запрос принят и успешно передан в GPT.");
+
+        message.setText(body);
         message.setChatId(chatId);
         replyToUser(message);
     }
