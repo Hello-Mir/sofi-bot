@@ -4,7 +4,7 @@ public enum Role {
     USER,
     ASSISTANT;
 
-    public String getLowerCase() {
+    public String getInLowCase() {
         return this.name().toLowerCase();
     }
 

@@ -8,7 +8,12 @@ public enum Model {
     GPT_3_5_TURBO_16K("gpt-3.5-turbo-16k"),
     GPT_4("gpt-4");
     private String value;
-     Model(String value) {
-         this.value = value;
+
+    Model(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
     }
 }

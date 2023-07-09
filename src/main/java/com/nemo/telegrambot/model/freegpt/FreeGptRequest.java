@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 public class FreeGptRequest {
     private String conversationId;
-    private String _ask;
+    private String action;
     private String model;
 
     private String jailbreak;
@@ -20,7 +20,7 @@ public class FreeGptRequest {
     public String toString() {
         return "FreeGptRequest{" +
                 "conversation_id='" + conversationId + '\'' +
-                ", _ask='" + _ask + '\'' +
+                ", _ask='" + action + '\'' +
                 ", model=" + model +
                 ", jailbreak='" + jailbreak + '\'' +
                 ", meta=" + meta +
