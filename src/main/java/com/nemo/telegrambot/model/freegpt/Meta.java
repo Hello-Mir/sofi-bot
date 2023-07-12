@@ -11,6 +11,7 @@ import static com.fasterxml.jackson.databind.PropertyNamingStrategies.*;
 @Setter
 public class Meta {
     private String id;
+    private Content content;
 
     @Override
     public String toString() {
@@ -19,6 +20,4 @@ public class Meta {
                 ", content=" + content +
                 '}';
     }
-
-    private Content content;
 }

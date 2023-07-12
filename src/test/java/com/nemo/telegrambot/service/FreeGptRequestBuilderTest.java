@@ -1,10 +1,14 @@
 package com.nemo.telegrambot.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nemo.telegrambot.model.freegpt.Content;
 import com.nemo.telegrambot.model.freegpt.Conversation;
 import com.nemo.telegrambot.model.freegpt.FreeGptRequest;
 import com.nemo.telegrambot.model.freegpt.Model;
 import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -31,5 +35,22 @@ class FreeGptRequestBuilderTest {
         assertEquals("Testing FreeGPTRequest.", conversationFromPreparedMeta.getContent());
         assertEquals(true, content.getInternetAccess());
         assertEquals("text", content.getContentType());
+    }
+
+    @Test
+    public void correctSerializing() {
+        // Arrange
+        String message = "Testing FreeGPTRequest.";
+
+        // Act
+        FreeGptRequest freeGptRequest = freeGptRequestBuilder.buildFreeGptRequestld(model, null, message);
+        ObjectMapper objectMapper = new ObjectMapper();
+        File file = new File("requestInJSON.json");
+        try {
+            String string = objectMapper.writeValueAsString(freeGptRequest);
+            objectMapper.writeValue(file, string);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

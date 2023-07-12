@@ -12,7 +12,6 @@ public class FreeGptRequest {
     private String conversationId;
     private String action;
     private String model;
-
     private String jailbreak;
     private Meta meta;
 
@@ -20,7 +19,7 @@ public class FreeGptRequest {
     public String toString() {
         return "FreeGptRequest{" +
                 "conversation_id='" + conversationId + '\'' +
-                ", _ask='" + action + '\'' +
+                ", action='" + action + '\'' +
                 ", model=" + model +
                 ", jailbreak='" + jailbreak + '\'' +
                 ", meta=" + meta +
