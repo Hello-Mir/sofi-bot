@@ -3,13 +3,13 @@ package com.nemo.telegrambot;
 import com.nemo.telegrambot.components.BotCommands;
 import com.nemo.telegrambot.components.Buttons;
 import com.nemo.telegrambot.config.BotConfig;
-import com.nemo.telegrambot.controllers.GptController;
 import com.nemo.telegrambot.database.MessageRepository;
 import com.nemo.telegrambot.database.UserRepository;
 import com.nemo.telegrambot.model.User;
 import com.nemo.telegrambot.model.freegpt.FreeGptRequest;
 import com.nemo.telegrambot.model.freegpt.Model;
 import com.nemo.telegrambot.service.FreeGptRequestBuilder;
+import com.nemo.telegrambot.service.FreeGptService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -23,16 +23,18 @@ public class GptBot extends TelegramLongPollingBot {
     private final BotConfig config;
     private final UserRepository userRepository;
     private final MessageRepository messageRepository;
-    private final GptController gptController;
     private final FreeGptRequestBuilder requestBuilder;
 
+    private final FreeGptService freeGptService;
+
     public GptBot(BotConfig config, UserRepository userRepository,
-                  MessageRepository messageRepository, GptController gptController, FreeGptRequestBuilder requestBuilder) {
+                  MessageRepository messageRepository, FreeGptRequestBuilder requestBuilder,
+                  FreeGptService freeGptService) {
         this.config = config;
         this.userRepository = userRepository;
         this.messageRepository = messageRepository;
-        this.gptController = gptController;
         this.requestBuilder = requestBuilder;
+        this.freeGptService = freeGptService;
     }
 
 
@@ -102,10 +104,8 @@ public class GptBot extends TelegramLongPollingBot {
     }
 
     private void sendMessageToGPT(long chatId, String text) {
-        requestBuilder.prepareMainPart(Model.GPT_3_5_TURBO, "default");
-        requestBuilder.prepareMeta(text);
-        FreeGptRequest freeGptRequest = requestBuilder.buildFreeGptRequestld();
-        String body = gptController.sendRequest("text/event-stream", freeGptRequest);
+        FreeGptRequest freeGptRequest = requestBuilder.buildFreeGptRequestld(Model.GPT_3_5_TURBO, "default", text);
+        String body = freeGptService.sendRequest("text/event-stream", freeGptRequest);
 
         messageRepository.saveMessage(text, chatId);
         SendMessage message = new SendMessage();

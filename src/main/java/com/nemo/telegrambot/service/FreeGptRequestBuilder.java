@@ -9,17 +9,17 @@ import static java.util.UUID.randomUUID;
 
 @Service
 public class FreeGptRequestBuilder {
-    private FreeGptRequest freeGptRequest = new FreeGptRequest();
+    private final FreeGptRequest freeGptRequest = new FreeGptRequest();
 
 
-    public void prepareMainPart(Model model, String jailbreak) {
+    private void prepareMainPart(Model model, String jailbreak) {
         freeGptRequest.setConversationId(randomUUID().toString());
         freeGptRequest.setAction("_ask");
         freeGptRequest.setModel(model.getValue());
         freeGptRequest.setJailbreak(jailbreak == null ? "default" : jailbreak);
     }
 
-    public void prepareMeta(String message) {
+    private void prepareMeta(String message) {
         Meta meta = new Meta();
         meta.setId(randomUUID().toString());
         Content content = new Content();
@@ -35,7 +35,9 @@ public class FreeGptRequestBuilder {
         freeGptRequest.setMeta(meta);
     }
 
-    public FreeGptRequest buildFreeGptRequestld() {
+    public FreeGptRequest buildFreeGptRequestld(Model model, String jailbreak, String message) {
+        prepareMainPart(model, jailbreak);
+        prepareMeta(message);
         return freeGptRequest;
     }
 }

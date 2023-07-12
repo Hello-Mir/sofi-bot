@@ -19,9 +19,7 @@ class FreeGptRequestBuilderTest {
         String message = "Testing FreeGPTRequest.";
 
         // Act
-        freeGptRequestBuilder.prepareMainPart(model, null);
-        freeGptRequestBuilder.prepareMeta(message);
-        FreeGptRequest freeGptRequest = freeGptRequestBuilder.build();
+        FreeGptRequest freeGptRequest = freeGptRequestBuilder.buildFreeGptRequestld(model, null, message);
         Content content = freeGptRequest.getMeta().getContent();
         Conversation conversationFromPreparedMeta = content.getConversation().get(0);
 
