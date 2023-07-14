@@ -2,9 +2,9 @@ package com.nemo.telegrambot.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nemo.telegrambot.model.freegpt.Content;
-import com.nemo.telegrambot.model.freegpt.Conversation;
 import com.nemo.telegrambot.model.freegpt.FreeGptRequest;
 import com.nemo.telegrambot.model.freegpt.Model;
+import com.nemo.telegrambot.model.freegpt.Parts;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -25,14 +25,14 @@ class FreeGptRequestBuilderTest {
         // Act
         FreeGptRequest freeGptRequest = freeGptRequestBuilder.buildFreeGptRequestld(model, null, message);
         Content content = freeGptRequest.getMeta().getContent();
-        Conversation conversationFromPreparedMeta = content.getConversation().get(0);
+        Parts parts = content.getParts().get(0);
 
         // Assert
         assertEquals("default", freeGptRequest.getJailbreak());
         assertEquals("gpt-3.5-turbo", freeGptRequest.getModel());
         assertNotNull(freeGptRequest.getConversationId());
-        assertEquals("user", conversationFromPreparedMeta.getRole());
-        assertEquals("Testing FreeGPTRequest.", conversationFromPreparedMeta.getContent());
+        assertEquals("user", parts.getRole());
+        assertEquals("Testing FreeGPTRequest.", parts.getContent());
         assertEquals(true, content.getInternetAccess());
         assertEquals("text", content.getContentType());
     }

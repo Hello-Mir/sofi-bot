@@ -18,9 +18,9 @@ public class FreeGptRequest {
     @Override
     public String toString() {
         return "FreeGptRequest{" +
-                "conversation_id='" + conversationId + '\'' +
+                "conversationId='" + conversationId + '\'' +
                 ", action='" + action + '\'' +
-                ", model=" + model +
+                ", model='" + model + '\'' +
                 ", jailbreak='" + jailbreak + '\'' +
                 ", meta=" + meta +
                 '}';

@@ -2,6 +2,7 @@ package com.nemo.telegrambot.service;
 
 import com.nemo.telegrambot.clients.feign.LocalhostClient;
 import com.nemo.telegrambot.model.freegpt.FreeGptRequest;
+import jakarta.xml.bind.SchemaOutputResolver;
 import org.springframework.stereotype.Service;
 
 @Service

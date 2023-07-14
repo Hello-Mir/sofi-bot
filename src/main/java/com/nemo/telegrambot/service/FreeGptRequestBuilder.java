@@ -20,17 +20,18 @@ public class FreeGptRequestBuilder {
     }
 
     private void prepareMeta(String message) {
-        Meta meta = new Meta();
-        meta.setId(randomUUID().toString());
         Content content = new Content();
-        Conversation conversation = new Conversation();
-        conversation.setContent(message);
-        conversation.setRole(Role.USER.getInLowCase());
-        content.setConversation(Collections.singletonList(conversation));
-
+        content.setConversation(Collections.singletonList(new Conversation()));
         content.setInternetAccess(true);
         content.setContentType("text");
-        content.setParts(Collections.singletonList(new Parts()));
+
+        Parts parts = new Parts();
+        parts.setContent(message);
+        parts.setRole(Role.USER.getInLowCase());
+        content.setParts(Collections.singletonList(parts));
+
+        Meta meta = new Meta();
+        meta.setId(randomUUID().toString());
         meta.setContent(content);
         freeGptRequest.setMeta(meta);
     }
