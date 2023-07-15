@@ -1,25 +1,30 @@
 package com.nemo.telegrambot.database;
 
-import com.nemo.telegrambot.model.Message;
+import com.nemo.telegrambot.model.UserRequests;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-public interface MessageRepository extends CrudRepository<Message, Long> {
+public interface MessageRepository extends CrudRepository<UserRequests, Long> {
     @Transactional
     @Modifying
-    @Query(value = "insert into messages (body, user_id, created_at) values(:body,:userId,CURRENT_TIMESTAMP)", nativeQuery = true)
-    void saveMessage(@Param("body") String body, @Param("userId") Long userId);
+    @Query(value = "insert into user_requests (conversation_id, user_id, created_at) values(:conversationId,:userId,CURRENT_TIMESTAMP)", nativeQuery = true)
+    void saveUserRequestData(@Param("conversationId") String conversationId, @Param("userId") Long userId);
 
     @Transactional
     @Modifying
-    @Query(value = "delete from messages where id=:id", nativeQuery = true)
-    void deleteMessageById(@Param("id") Long messageId);
+    @Query(value = "delete from user_requests where id=:messageId", nativeQuery = true)
+    void deleteMessageById(@Param("messageId") Long messageId);
 
     @Transactional
     @Modifying
-    @Query(value = "delete from messages where user_id =:id", nativeQuery = true)
-    void deleteAllMessagesForUser(@Param("id") Long userId);
+    @Query(value = "delete from user_requests where user_id =:userId", nativeQuery = true)
+    void deleteAllMessagesForUser(@Param("userId") Long userId);
+
+    @Transactional
+    @Modifying
+    @Query(value = "select conversation_id from user_requests where conversation_id = : conversation_id", nativeQuery = true)
+    String getConversationId(@Param("conversation_id") String conversationId);
 }

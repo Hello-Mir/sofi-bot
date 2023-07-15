@@ -8,11 +8,12 @@ import lombok.Data;
 import java.sql.Timestamp;
 
 @Data
-@Entity(name = "messages")
-public class Message {
+@Entity(name = "user_requests")
+public class UserRequests {
     @Id
     private Long id;
-    private String body;
+    @Column(name = "conversation_id")
+    private String conversationId;
     @Column(name = "user_id")
     private Long userId;
     @Column(name = "created_at")

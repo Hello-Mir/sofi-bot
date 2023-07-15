@@ -108,7 +108,7 @@ public class GptBot extends TelegramLongPollingBot {
         String body = freeGptService.sendRequest("text/event-stream", freeGptRequest);
         log.info(String.format("Received request from user: %s", freeGptRequest));
 
-        messageRepository.saveMessage(text, chatId);
+        messageRepository.saveUserRequestData(text, chatId);
         SendMessage message = new SendMessage();
         log.info(String.format("Sent message to user: %s", message));
 
