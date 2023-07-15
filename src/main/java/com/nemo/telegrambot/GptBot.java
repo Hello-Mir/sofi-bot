@@ -3,8 +3,8 @@ package com.nemo.telegrambot;
 import com.nemo.telegrambot.components.BotCommands;
 import com.nemo.telegrambot.components.Buttons;
 import com.nemo.telegrambot.config.BotConfig;
-import com.nemo.telegrambot.database.MessageRepository;
 import com.nemo.telegrambot.database.UserRepository;
+import com.nemo.telegrambot.database.UserRequestsRepository;
 import com.nemo.telegrambot.model.User;
 import com.nemo.telegrambot.model.freegpt.FreeGptRequest;
 import com.nemo.telegrambot.model.freegpt.Model;
@@ -22,17 +22,17 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 public class GptBot extends TelegramLongPollingBot {
     private final BotConfig config;
     private final UserRepository userRepository;
-    private final MessageRepository messageRepository;
+    private final UserRequestsRepository userRequestsRepository;
     private final FreeGptRequestBuilder requestBuilder;
 
     private final FreeGptService freeGptService;
 
     public GptBot(BotConfig config, UserRepository userRepository,
-                  MessageRepository messageRepository, FreeGptRequestBuilder requestBuilder,
+                  UserRequestsRepository userRequestsRepository, FreeGptRequestBuilder requestBuilder,
                   FreeGptService freeGptService) {
         this.config = config;
         this.userRepository = userRepository;
-        this.messageRepository = messageRepository;
+        this.userRequestsRepository = userRequestsRepository;
         this.requestBuilder = requestBuilder;
         this.freeGptService = freeGptService;
     }
@@ -104,13 +104,13 @@ public class GptBot extends TelegramLongPollingBot {
     }
 
     private void sendMessageToGPT(long chatId, String text) {
-        String conversationId = "con";
+        String conversationId = getConversationId(chatId);
         FreeGptRequest freeGptRequest =
                 requestBuilder.buildFreeGptRequestld(conversationId, Model.GPT_3_5_TURBO, "default", text);
         String body = freeGptService.sendRequest("text/event-stream", freeGptRequest);
         log.info(String.format("Received request from user: %s", freeGptRequest));
 
-        messageRepository.saveUserRequestData(text, chatId);
+        userRequestsRepository.saveUserRequestData(text, chatId);
         SendMessage message = new SendMessage();
         log.info(String.format("Sent message to user: %s", message));
 
@@ -120,7 +120,7 @@ public class GptBot extends TelegramLongPollingBot {
     }
 
     private void deleteAllUserRequestData(long chatId) {
-        messageRepository.deleteAllMessagesForUser(chatId);
+        userRequestsRepository.deleteAllMessagesForUser(chatId);
         SendMessage message = new SendMessage();
         message.setText("Вся история запросов очищена");
         message.setChatId(chatId);
@@ -148,5 +148,9 @@ public class GptBot extends TelegramLongPollingBot {
         } catch (TelegramApiException e) {
             log.error(e.getMessage());
         }
+    }
+
+    private String getConversationId(Long userId) {
+        return userRequestsRepository.getConversationId(userId);
     }
 }

@@ -7,16 +7,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-public interface MessageRepository extends CrudRepository<UserRequests, Long> {
+public interface UserRequestsRepository extends CrudRepository<UserRequests, Long> {
     @Transactional
     @Modifying
-    @Query(value = "insert into user_requests (conversation_id, user_id, created_at) values(:conversationId,:userId,CURRENT_TIMESTAMP)", nativeQuery = true)
+    @Query(value = "insert into user_requests (conversation_id, user_id, created_at) " +
+            "values(:conversationId,:userId,CURRENT_TIMESTAMP)", nativeQuery = true)
     void saveUserRequestData(@Param("conversationId") String conversationId, @Param("userId") Long userId);
-
-    @Transactional
-    @Modifying
-    @Query(value = "delete from user_requests where id=:messageId", nativeQuery = true)
-    void deleteMessageById(@Param("messageId") Long messageId);
 
     @Transactional
     @Modifying
@@ -25,6 +21,6 @@ public interface MessageRepository extends CrudRepository<UserRequests, Long> {
 
     @Transactional
     @Modifying
-    @Query(value = "select conversation_id from user_requests where conversation_id = : conversation_id", nativeQuery = true)
-    String getConversationId(@Param("conversation_id") String conversationId);
+    @Query(value = "select conversation_id from user_requests where user_id = : userId", nativeQuery = true)
+    String getConversationId(@Param("userId") Long userId);
 }
