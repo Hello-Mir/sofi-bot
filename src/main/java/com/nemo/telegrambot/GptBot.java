@@ -106,13 +106,11 @@ public class GptBot extends TelegramLongPollingBot {
     private void sendMessageToGPT(long chatId, String text) {
         FreeGptRequest freeGptRequest = requestBuilder.buildFreeGptRequestld(Model.GPT_3_5_TURBO, "default", text);
         String body = freeGptService.sendRequest("text/event-stream", freeGptRequest);
-//        log.info(String.format("Request from user: %s", freeGptRequest));
-        System.out.printf("Request from user: %s%n", freeGptRequest);
+        log.info(String.format("Received request from user: %s", freeGptRequest));
 
         messageRepository.saveMessage(text, chatId);
         SendMessage message = new SendMessage();
-//        log.info(String.format("Message to user: %s", message));
-        System.out.printf("Message to user: %s%n", message);
+        log.info(String.format("Sent message to user: %s", message));
 
         message.setText(body);
         message.setChatId(chatId);
@@ -122,7 +120,7 @@ public class GptBot extends TelegramLongPollingBot {
     private void sendDeleteAllMyMessagesText(long chatId) {
         messageRepository.deleteAllMessagesForUser(chatId);
         SendMessage message = new SendMessage();
-        message.setText("История Ваших запросов очищена из Базы.");
+        message.setText("Вся история запросов очищена");
         message.setChatId(chatId);
         replyToUser(message);
     }
@@ -136,7 +134,7 @@ public class GptBot extends TelegramLongPollingBot {
             user.setMsg_number(1);
 
             userRepository.save(user);
-            log.info("Added to DB: " + user);
+            log.info(String.format("User: '%s' added to DB", user));
         } else {
             userRepository.updateMsgNumberByUserId(userId);
         }
