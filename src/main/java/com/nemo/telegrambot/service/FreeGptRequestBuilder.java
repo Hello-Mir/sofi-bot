@@ -12,8 +12,8 @@ public class FreeGptRequestBuilder {
     private final FreeGptRequest freeGptRequest = new FreeGptRequest();
 
 
-    private void prepareMainPart(Model model, String jailbreak) {
-        freeGptRequest.setConversationId(randomUUID().toString());
+    private void prepareMainPart(String conversationId, Model model, String jailbreak) {
+        freeGptRequest.setConversationId(conversationId == null ? randomUUID().toString() : conversationId);
         freeGptRequest.setAction("_ask");
         freeGptRequest.setModel(model.getValue());
         freeGptRequest.setJailbreak(jailbreak == null ? "default" : jailbreak);
@@ -36,8 +36,8 @@ public class FreeGptRequestBuilder {
         freeGptRequest.setMeta(meta);
     }
 
-    public FreeGptRequest buildFreeGptRequestld(Model model, String jailbreak, String message) {
-        prepareMainPart(model, jailbreak);
+    public FreeGptRequest buildFreeGptRequestld(String converationId, Model model, String jailbreak, String message) {
+        prepareMainPart(converationId, model, jailbreak);
         prepareMeta(message);
         return freeGptRequest;
     }

@@ -81,7 +81,7 @@ public class GptBot extends TelegramLongPollingBot {
     private void botAnswerUtils(String receivedMessage, long chatId, String userName) {
         switch (receivedMessage) {
             case "/start" -> startBot(chatId, userName);
-            case "/delete_all_my_questions" -> sendDeleteAllMyMessagesText(chatId);
+            case "/delete_all_my_questions" -> deleteAllUserRequestData(chatId);
             case "/help" -> sendHelpText(chatId);
             default -> sendMessageToGPT(chatId, receivedMessage);
         }
@@ -104,7 +104,9 @@ public class GptBot extends TelegramLongPollingBot {
     }
 
     private void sendMessageToGPT(long chatId, String text) {
-        FreeGptRequest freeGptRequest = requestBuilder.buildFreeGptRequestld(Model.GPT_3_5_TURBO, "default", text);
+        String conversationId = "con";
+        FreeGptRequest freeGptRequest =
+                requestBuilder.buildFreeGptRequestld(conversationId, Model.GPT_3_5_TURBO, "default", text);
         String body = freeGptService.sendRequest("text/event-stream", freeGptRequest);
         log.info(String.format("Received request from user: %s", freeGptRequest));
 
@@ -117,7 +119,7 @@ public class GptBot extends TelegramLongPollingBot {
         replyToUser(message);
     }
 
-    private void sendDeleteAllMyMessagesText(long chatId) {
+    private void deleteAllUserRequestData(long chatId) {
         messageRepository.deleteAllMessagesForUser(chatId);
         SendMessage message = new SendMessage();
         message.setText("Вся история запросов очищена");
