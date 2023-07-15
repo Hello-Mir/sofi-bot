@@ -13,7 +13,7 @@ public class FreeGptRequestBuilder {
 
 
     private void prepareMainPart(String conversationId, Model model, String jailbreak) {
-        freeGptRequest.setConversationId(conversationId == null ? randomUUID().toString() : conversationId);
+        freeGptRequest.setConversationId(conversationId);
         freeGptRequest.setAction("_ask");
         freeGptRequest.setModel(model.getValue());
         freeGptRequest.setJailbreak(jailbreak == null ? "default" : jailbreak);

@@ -17,6 +17,9 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import static com.nemo.telegrambot.components.BotCommands.START_TEXT;
+import static java.util.UUID.randomUUID;
+
 @Slf4j
 @Component
 public class GptBot extends TelegramLongPollingBot {
@@ -81,14 +84,14 @@ public class GptBot extends TelegramLongPollingBot {
     private void botAnswerUtils(String receivedMessage, long chatId, String userName) {
         switch (receivedMessage) {
             case "/start" -> startBot(chatId, userName);
-            case "/delete_all_my_questions" -> deleteAllUserRequestData(chatId);
+            case "/delete" -> deleteDialogue(chatId);
             case "/help" -> sendHelpText(chatId);
             default -> sendMessageToGPT(chatId, receivedMessage);
         }
     }
 
     private void startBot(long chatId, String userName) {
-        String startText = "Здравствуйте, " + userName + "\n. Я Софи - Ваш помощник.\nПередам Ваши запросы в GPT.";
+        String startText = "Приветствую, " + userName + "\uD83D\uDC8B" + ".\n" + START_TEXT;
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
         message.setText(startText);
@@ -110,7 +113,7 @@ public class GptBot extends TelegramLongPollingBot {
         String body = freeGptService.sendRequest("text/event-stream", freeGptRequest);
         log.info(String.format("Received request from user: %s", freeGptRequest));
 
-        userRequestsRepository.saveUserRequestData(text, chatId);
+        userRequestsRepository.saveUserRequestData(conversationId, chatId);
         SendMessage message = new SendMessage();
         log.info(String.format("Sent message to user: %s", message));
 
@@ -119,10 +122,10 @@ public class GptBot extends TelegramLongPollingBot {
         replyToUser(message);
     }
 
-    private void deleteAllUserRequestData(long chatId) {
-        userRequestsRepository.deleteAllMessagesForUser(chatId);
+    private void deleteDialogue(long chatId) {
+        userRequestsRepository.deleteCurrentDialogue(chatId);
         SendMessage message = new SendMessage();
-        message.setText("Вся история запросов очищена");
+        message.setText("Диалог успешно удален.");
         message.setChatId(chatId);
         replyToUser(message);
     }
@@ -151,6 +154,7 @@ public class GptBot extends TelegramLongPollingBot {
     }
 
     private String getConversationId(Long userId) {
-        return userRequestsRepository.getConversationId(userId);
+        String conversationId = userRequestsRepository.getConversationId(userId);
+        return conversationId == null ? randomUUID().toString() : conversationId;
     }
 }
