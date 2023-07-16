@@ -20,6 +20,7 @@ public interface UserRequestsRepository extends CrudRepository<UserRequests, Lon
     void deleteCurrentDialogue(@Param("userId") Long userId);
 
     @Transactional
-    @Query(value = "select conversation_id from user_requests where user_id = :userId", nativeQuery = true)
+    @Query(value = "select conversation_id from user_requests where user_id = :userId " +
+            "order by created_at DESC limit 1", nativeQuery = true)
     String getConversationId(@Param("userId") Long userId);
 }

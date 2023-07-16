@@ -17,6 +17,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import static com.nemo.telegrambot.components.BotCommands.EXCEPTION_PRETEXT;
 import static com.nemo.telegrambot.components.BotCommands.START_TEXT;
 import static java.util.UUID.randomUUID;
 
@@ -107,19 +108,26 @@ public class GptBot extends TelegramLongPollingBot {
     }
 
     private void sendMessageToGPT(long chatId, String text) {
-        String conversationId = getConversationId(chatId);
-        FreeGptRequest freeGptRequest =
-                requestBuilder.buildFreeGptRequestld(conversationId, Model.GPT_3_5_TURBO, "default", text);
-        String body = freeGptService.sendRequest("text/event-stream", freeGptRequest);
-        log.info(String.format("Received request from user: %s", freeGptRequest));
-
-        userRequestsRepository.saveUserRequestData(conversationId, chatId);
         SendMessage message = new SendMessage();
-        log.info(String.format("Sent message to user: %s", message));
-
-        message.setText(body);
         message.setChatId(chatId);
-        replyToUser(message);
+        try {
+            String conversationId = getConversationId(chatId);
+            FreeGptRequest freeGptRequest =
+                    requestBuilder.buildFreeGptRequestld(conversationId, Model.GPT_3_5_TURBO, "default", text);
+            String body = freeGptService.sendRequest("text/event-stream", freeGptRequest);
+            log.info(String.format("Received request from user: %s", freeGptRequest));
+
+            userRequestsRepository.saveUserRequestData(conversationId, chatId);
+            log.info(String.format("Sent message to user: %s", message));
+
+            message.setText(body);
+            replyToUser(message);
+        } catch (Exception exception) {
+            String exceptionMessage = exception.getMessage();
+            message.setText(EXCEPTION_PRETEXT + exceptionMessage);
+            replyToUser(message);
+        }
+
     }
 
     private void deleteDialogue(long chatId) {
@@ -155,6 +163,7 @@ public class GptBot extends TelegramLongPollingBot {
 
     private String getConversationId(Long userId) {
         String conversationId = userRequestsRepository.getConversationId(userId);
+        log.info("Got conversationId for user:" + conversationId);
         return conversationId == null ? randomUUID().toString() : conversationId;
     }
 }
