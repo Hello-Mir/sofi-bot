@@ -11,7 +11,9 @@ public class InitDbTables {
 
     public InitDbTables(Sql2OConnect sql2OConnect) {
         this.sql2OConnect = sql2OConnect;
+        initTables();
     }
+
 
     public void initTables() {
         Sql2o connection = sql2OConnect.createSql();
