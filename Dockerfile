@@ -7,7 +7,7 @@ ENV SPRING_DATASOURCE_USERNAME=tsar
 ENV SPRING_DATASOURCE_PASSWORD=gvidon
 
 # Копируем скомпилированный JAR-файл в контейнер
-COPY target/telegrambot.jar /bot.jar
+COPY target/telegram-bot-0.0.1-SNAPSHOT.jar /bot.jar
 
 # Открываем порт, на котором будет работать приложение
 EXPOSE 8080

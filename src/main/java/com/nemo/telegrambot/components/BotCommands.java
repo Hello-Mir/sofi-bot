@@ -2,12 +2,11 @@ package com.nemo.telegrambot.components;
 
 public interface BotCommands {
     String HELP_TEXT = """
-            Этот бот принимает запросы и передает в том же виде ChatGpt.
+            Этот бот принимает Ваши запросы и передает их в том же виде ChatGpt.
             Доступны следующие команды:
             /start - запуск бота
             /delete - удалить все Ваши сообщения из БД
-            /help - меню помощи,
-            если не указана ни одна из команд выше""";
+            /help - меню помощи""";
 
     String START_TEXT = """
             Я - Софи.
