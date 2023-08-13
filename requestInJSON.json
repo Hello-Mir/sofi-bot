@@ -1,0 +1,1 @@
+"{\"conversation_id\":\"12312\",\"action\":\"_ask\",\"model\":\"gpt-3.5-turbo\",\"jailbreak\":\"default\",\"meta\":{\"id\":\"3b3b6090-232e-43a2-8911-a4f64a5181f7\",\"content\":{\"conversation\":[{\"role\":null,\"content\":null}],\"internet_access\":true,\"content_type\":\"text\",\"parts\":[{\"content\":\"Testing FreeGPTRequest.\",\"role\":\"user\"}]}}}"
