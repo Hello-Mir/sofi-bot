@@ -15,14 +15,15 @@ services:
       - "8080"
     depends_on:
       - db
-
+      
   freegpt-neurogen:
-    image: freegpt-neurogen
-    build:
-      context: .
-      dockerfile: freeGPT/Dockerfile
+    neurogengpt:
+    build: .
+    dockerfile: /Users/nemo/vs_code/neuro-gpt/dockerfile
     ports:
-      - "1338:1338"
+      - "7860:7860"
       - "1337:1337"
+    env_file:
+      - .env
     depends_on:
       - bot     
