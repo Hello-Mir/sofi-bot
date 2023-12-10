@@ -1,6 +1,5 @@
 package com.nemo.telegrambot.clients.feign;
 
-import com.nemo.telegrambot.model.freegpt.FreeGptRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;

@@ -1,4 +1,4 @@
-package com.nemo.telegrambot.model;
+package com.nemo.telegrambot.model.freegpt;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
