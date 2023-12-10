@@ -8,7 +8,7 @@ import com.nemo.telegrambot.database.UserRequestsRepository;
 import com.nemo.telegrambot.model.User;
 import com.nemo.telegrambot.model.freegpt.FreeGptRequest;
 import com.nemo.telegrambot.model.freegpt.Model;
-import com.nemo.telegrambot.service.FreeGptRequestBuilder;
+import com.nemo.telegrambot.service.UserRequestBuilder;
 import com.nemo.telegrambot.service.FreeGptService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -27,20 +27,19 @@ public class GptBot extends TelegramLongPollingBot {
     private final BotConfig config;
     private final UserRepository userRepository;
     private final UserRequestsRepository userRequestsRepository;
-    private final FreeGptRequestBuilder requestBuilder;
+    private final UserRequestBuilder requestBuilder;
 
     private final FreeGptService freeGptService;
 
     public GptBot(BotConfig config, UserRepository userRepository,
-                  UserRequestsRepository userRequestsRepository, FreeGptRequestBuilder requestBuilder,
-                  FreeGptService freeGptService) {
+            UserRequestsRepository userRequestsRepository, UserRequestBuilder requestBuilder,
+            FreeGptService freeGptService) {
         this.config = config;
         this.userRepository = userRepository;
         this.userRequestsRepository = userRequestsRepository;
         this.requestBuilder = requestBuilder;
         this.freeGptService = freeGptService;
     }
-
 
     @Override
     public String getBotUsername() {
@@ -112,8 +111,8 @@ public class GptBot extends TelegramLongPollingBot {
         message.setChatId(chatId);
         try {
             String conversationId = getConversationId(chatId);
-            FreeGptRequest freeGptRequest =
-                    requestBuilder.buildFreeGptRequestld(conversationId, Model.GPT_3_5_TURBO, "default", text);
+            FreeGptRequest freeGptRequest = requestBuilder.buildFreeGptRequestld(conversationId, Model.GPT_3_5_TURBO,
+                    "default", text);
             String body = freeGptService.sendRequest("text/event-stream", freeGptRequest);
             log.info(String.format("Received request from user: %s", freeGptRequest));
 
@@ -143,7 +142,7 @@ public class GptBot extends TelegramLongPollingBot {
             User user = new User();
             user.setId(userId);
             user.setName(userName);
-            //сразу добавляем в столбец каунтера 1 сообщение
+            // сразу добавляем в столбец каунтера 1 сообщение
             user.setMsg_number(1);
 
             userRepository.save(user);

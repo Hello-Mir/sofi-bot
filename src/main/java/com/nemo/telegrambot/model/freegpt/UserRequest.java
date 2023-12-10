@@ -1,8 +1,8 @@
 package com.nemo.telegrambot.model.freegpt;
 
-import org.glassfish.jersey.internal.guava.MoreObjects;
-import org.springframework.data.mapping.model.SnakeCaseFieldNamingStrategy;
+import java.util.List;
 
+import org.glassfish.jersey.internal.guava.MoreObjects;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
@@ -23,6 +23,7 @@ public record UserRequest(
                 .add("temperature", temperature)
                 .add("presence_penalty", presequence_penalty)
                 .add("frequency_penalty", frequencyPenalty)
-                .add("top_p", topP);
+                .add("top_p", topP)
+                .toString();
     }
 }

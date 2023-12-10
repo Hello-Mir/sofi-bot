@@ -6,8 +6,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.nemo.telegrambot.model.freegpt.UserRequest;
+
 @FeignClient(name = "localhostClient", url = "http://127.0.0.1:1338")
 public interface LocalhostClient {
     @RequestMapping(method = RequestMethod.POST, value = "/backend-api/v2/conversation")
-    String sendRequest(@RequestHeader String header, @RequestBody FreeGptRequest request);
+    String sendRequest(@RequestHeader String header, @RequestBody UserRequest request);
 }

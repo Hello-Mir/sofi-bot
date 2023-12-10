@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class FreeGptRequestBuilderTest {
     private final Model model = Model.GPT_3_5_TURBO;
-    FreeGptRequestBuilder freeGptRequestBuilder = new FreeGptRequestBuilder();
+    UserRequestBuilder freeGptRequestBuilder = new UserRequestBuilder();
 
     @Test
     public void correct_request_with_model_and_text() {
@@ -23,7 +23,8 @@ class FreeGptRequestBuilderTest {
         String converationId = "12312";
 
         // Act
-        FreeGptRequest freeGptRequest = freeGptRequestBuilder.buildFreeGptRequestld(converationId, model, null, message);
+        FreeGptRequest freeGptRequest = freeGptRequestBuilder.buildFreeGptRequestld(converationId, model, null,
+                message);
         Content content = freeGptRequest.getMeta().getContent();
         Parts parts = content.getParts().get(0);
 
@@ -44,8 +45,8 @@ class FreeGptRequestBuilderTest {
         String converationId = "12312";
 
         // Act
-        FreeGptRequest freeGptRequest =
-                freeGptRequestBuilder.buildFreeGptRequestld(converationId, model, null, message);
+        FreeGptRequest freeGptRequest = freeGptRequestBuilder.buildFreeGptRequestld(converationId, model, null,
+                message);
         ObjectMapper objectMapper = new ObjectMapper();
         File file = new File("requestInJSON.json");
         try {
