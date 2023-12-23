@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 @JsonNaming(SnakeCaseStrategy.class)
 public record UserRequest(
         List<Messages> messages,
-        Model model,
+        String model,
         Double temperature,
         Integer presequence_penalty,
         Integer frequencyPenalty,
